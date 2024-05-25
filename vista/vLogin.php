@@ -19,8 +19,8 @@
   <script src="../plugins/jquery/jquery.min.js"></script>
   <script src="../controlador/cLogin.js"></script>
 </head>
-
-<body class="hold-transition login-page" style="background:#B2DFDB">
+<body class="hold-transition login-page" style="background-image: url('../dist/img/rabello_log.jpg') ;"></body>
+<!--<body class="hold-transition login-page" style="background:#B2DFDB"-->
   <div class="login-box">
     <div class="login-logo">
       <a href="#"><b>RESIDENTIA</b></a>
@@ -64,7 +64,7 @@
             </div>
 
             <div class="col-4">
-              <button id="inicio" class="btn btn-primary btn-block">ENTRAR</button>
+              <button id="inicio" class="btn btn-primary btn-block">ACCEDER</button>
             </div>
           </div>
         </form>
