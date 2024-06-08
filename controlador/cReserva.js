@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     $('#reservation').daterangepicker({
         "singleDatePicker": true,
         "startDate": "06/23/2023",
@@ -10,29 +11,32 @@ $(document).ready(function () {
     });
 
     selectAreaComun();
+    
 
     $("#registra").click(function(e){
         //e.preventDefault();
-        nombre=$("#nombre").val();
-        area= $("#select-AreaComun option:selected").val();
-        //permiso=$("#permiso").val();
-       // area=$("#area").val();
-        reservation=$("#reservation").val();
-        privada=$("#privada").val();
-        tel=$("#tel").val();
+        area_comun= $("#select-AreaComun option:selected").val();
+        fecha_reserva=$("#reservation").val();
+        horario=$("#horario").val();
+        id_comprobante_pago=$("#id_comprobante_pago").val();
        
-       
-
     const options ={
         method: "GET"
     };
 
-    fetch("../modelo/mReserva.php?area="+ area + "&fecha=" + reservation+ "&privada=" + privada + "&tel=" + tel, options)
+    fetch("../modelo/mReserva.php?area_comun="+ area_comun + "&fecha_reserva=" + fecha_reserva+ "&horario=" + horario + "&id_comprobante_pago=" + id_comprobante_pago, options)
     .then(Response => Response.json())
     .then(data => {
         if(data["Estado"] == "OK"){
-            alert("REGISTRADO");
-            $(location).attr('href' ,'vLogin.php');
+            //alert("REGISTRADO");
+            Swal.fire({
+                type: 'success',
+                title: 'RESERVA EXITOSA',
+                text: 'Haz click en el boton',  
+              });
+              setTimeout(function() {
+                $(location).attr('href' ,'../principal.html');
+              }, 2000);
         }
         else{
             alert("NO REGISTRADO");
@@ -42,7 +46,7 @@ $(document).ready(function () {
     e.preventDefault();
     e.stopPropagation();
     })
-})
+
 function selectAreaComun(){
     const options = {
         method: "GET"
@@ -59,3 +63,38 @@ fetch(url, options)
     }
 })
 }
+
+function reserve(name, lastName, phone, email, date, time) {
+    console.log("reservando..")
+
+    db.collection("bookings").add({
+        name: name,
+        lastName: lastName,
+        phone: phone,
+        email: email,
+        date: date,
+        time: time
+    })
+        .then(function (docRef) {
+            console.log("Document written with ID: ", docRef.id);
+            cleanInputs()
+            Swal.fire(
+                'Reserva Exitosa!',
+                '',
+                'success'
+            )
+        })
+        .catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+}
+
+})
+
+$("#btn2").click(function(){
+    Swal.fire({        
+        type: 'success',
+        title: 'Éxito',
+        text: '¡Perfecto!',        
+    });
+});	
