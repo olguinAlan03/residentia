@@ -31,6 +31,15 @@
         <p class="login-box-msg">INICIAR SESIÓN</p>
 
         <form>
+        <div class="input-group mb-3">
+            <input id="clvresidente" type="text" class="form-control" placeholder="Clave Residente">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-solid fa-user"></span>
+
+              </div>
+            </div>
+          </div>
           <div class="input-group mb-3">
             <input id="usuario" type="text" class="form-control" placeholder="Usuario">
             <div class="input-group-append">
@@ -53,7 +62,7 @@
               <div class="icheck-primary">
                 <input type="checkbox" id="agreeTerms" name="terms" value="agree">
                 <a href="vRegistro.php" class="text-center">
-                  <font style="vertical-align: inherit;">
+                  <!--<font style="vertical-align: inherit;">
                     <font style="vertical-align: inherit;">¿No tienes cuenta?</font>
                     <font style="vertical-align: inherit;"> Registrate</font>
                   </font>
@@ -65,6 +74,7 @@
 
             <div class="col-4">
               <button id="inicio" class="btn btn-primary btn-block">ACCEDER</button>
+              <!--<button type="button" class="btn btn-default swalDefaultQuestion">Launch Question Toast</button>-->
             </div>
           </div>
         </form>

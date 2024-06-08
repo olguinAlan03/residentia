@@ -1,7 +1,9 @@
 $(document).ready(function(){
     $("#inicio").click(function(e){
         //e.preventDefault();
-        nombre=$("#usuario").val();
+
+        id_residente = $("#clvresidente").val();
+        usuario = $("#usuario").val();
         pass=$("#pass").val();
 
 
@@ -10,16 +12,18 @@ $(document).ready(function(){
         method: "GET"
     };
 
-    fetch("../modelo/mlogin.php?nombre=" + nombre + "&pass=" + pass , options)
+    fetch("../modelo/mlogin.php?id_residente=" + id_residente + "&usuario=" + usuario + "&password=" + pass , options)
     .then(Response => Response.json())
     .then(data =>{ 
         console.log(data);
         if(data["Estado"] == "OK"){
-         if(data["permiso"] == 1){
+         if(data["id_rol"] == 1){
             $(location).attr('href' ,'vMenu.php');
         }
         else{
-            $(location).attr('href' ,'vMenu.php');
+            //if(data["permiso"] == 2){
+               // $(location).attr('href' ,'../principal.html');
+           // }
         }
     }
     else{

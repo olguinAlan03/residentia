@@ -1,18 +1,18 @@
 <?php
-    $nombre=$_GET["nombre"];
-    $correo=$_GET["correo"];
-    $rol=$_GET["rol"];
+    $rol=2;
+    $clvResidente=$_GET["clvResidente"];
+    $usuario=$_GET["usuario"];
     $pass=$_GET["pass"];
-    $nombre_privada=$_GET["nombre_privada"];
+    //$nombre_privada=$_GET["nombre_privada"];
    
-    $mysqli = new mysqli("localhost","root","","test");
+    $mysqli = new mysqli("localhost","root","","residentia");
 if ($mysqli -> connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
   exit();
 }
 // Perform query
-
-$sql="INSERT INTO registro(nombre,permiso,correo,pass,nombre_privada) VALUES ('".$nombre."','".$rol."','".$correo."','".$pass."','".$nombre_privada."')";
+//id_rol,
+$sql="INSERT INTO usuarios_pag(id_residente,nombre,passwor) VALUES ('".$clvResidente."','".$usuario."','".$pass."')";
 if($mysqli->query($sql)=== TRUE){
   $json['Estado'] = "OK";
   print_r(json_encode($json));

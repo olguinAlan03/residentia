@@ -19,17 +19,17 @@
     <script src="../plugins/jquery/jquery.min.js"></script>
     <script src="../controlador/cRegistro.js"></script>
 </head>
-
+<body class="hold-transition login-page" style="background-image: url('../dist/img/Rabello_lg.jpg') ;">
 <body class="register-page" style="min-height: 570.781px;">
     <div class="register-box">
         <div class="register-logo">
             <a href="../index2.html"><b>
                     <font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit;">Pagina de</font>
+                        <font style="vertical-align: inherit;">REGISTRO DE</font>
                     </font>
                 </b>
                 <font style="vertical-align: inherit;">
-                    <font style="vertical-align: inherit;"> Registro</font>
+                    <font style="vertical-align: inherit;">USUARIO</font>
                 </font>
             </a>
         </div>
@@ -37,12 +37,12 @@
             <div class="card-body register-card-body">
                 <p class="login-box-msg">
                     <font style="vertical-align: inherit;">
-                        <font style="vertical-align: inherit;">Registra tu conjunto residencial</font>
+                        <font style="vertical-align: inherit;">Ingresa tus Datos</font>
                     </font>
                 </p>
                 <form>
                     <div class="input-group mb-3">
-                        <input id="nombre" type="text" class="form-control" placeholder="Nombre completo">
+                        <input id="clvResidente" type="text" class="form-control" placeholder="Clave Residente">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -50,24 +50,37 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <select id="select-rol" class="form-control">
-                            <option id="1" value="1">Administrador</option>
-                            <option id="2" value="2">Cliente</option>
-                        </select>
+                        <input id="usuario" type="text" class="form-control" placeholder="Usuario">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
+                    <!--<div class="input-group mb-3">
+                        <input id="apellMater" type="text" class="form-control" placeholder="Apellido Materno">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>-->
+                    <!--<div class="input-group mb-3">
                         <input id="correo" type="email" class="form-control" placeholder="Correo electrónico">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
+                    <!--<div class="input-group mb-3">
+                        <input id="telefono" type="email" class="form-control" placeholder="Número de teléfono">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-phone"></span>
+                            </div>
+                        </div>
+                    </div>-->
                     <div class="input-group mb-3">
                         <input id="pass" type="password" class="form-control" placeholder="Contraseña">
                         <div class="input-group-append">
@@ -76,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
+                   <!-- <div class="input-group mb-3">
                         <input id="nombre_privada" type="text" class="form-control"
                             placeholder="Nombre del Conjunto Residencial">
                         <div class="input-group-append">
@@ -92,12 +105,12 @@
                             <div class="icheck-primary">
 
                             </div>
-                        </div>
-
+                        </div>-->
+                        <!--<button type="button" class="btn btn-default swalDefaultQuestion">Launch Question Toast</button>-->
                         <div class="col-4">
                             <button id="registra" class="btn btn-primary btn-block">
                                 <font style="vertical-align: inherit;">
-                                    <font style="vertical-align: inherit;">Registro</font>
+                                    <font style="vertical-align: inherit;">Registrar</font>
                                 </font>
                             </button>
                         </div>

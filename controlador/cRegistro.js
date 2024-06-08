@@ -3,19 +3,19 @@ $(document).ready(function(){
 
     $("#registra").click(function(e){
         //e.preventDefault();
-        nombre=$("#nombre").val();
-        rol= $("#select-rol option:selected").val();
-        //permiso=$("#permiso").val();
-        correo=$("#correo").val();
+       // rol= $('2').val();
+        clvResidente=$("#clvResidente").val();
+        usuario=$("#usuario").val();
         pass=$("#pass").val();
-        nombre_privada=$("#nombre_privada").val();
+        //nombre_privada=$("#nombre_privada").val();
        
 
     const options ={
         method: "GET"
     };
-
-    fetch("../modelo/registro.php?nombre="+ nombre + "&rol=" + rol + "&correo=" + correo + "&pass=" + pass + "&nombre_privada=" + nombre_privada, options)
+    //rol="+ rol + "&
+    uri="../modelo/registro.php?"+ "id_residente=" + clvResidente + "&apellPater=" + apellPater + "&apellMater=" + apellMater + "&pass=" + pass
+    fetch(uri, options)
     .then(Response => Response.json())
     .then(data => {
         if(data["Estado"] == "OK"){
