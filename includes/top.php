@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ADMINISTRACION</title>
+  <title>RESIDENTIA</title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+  
 
   <!-- jQuery -->
   <script src="../plugins/jquery/jquery.min.js"></script>
@@ -20,10 +21,11 @@
   <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  
 <!-- daterange picker -->
 <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
 </head>
-
+<!--<body class="hold-transition login-page" style="background-image: url('../dist/img/fondo_reserva.jpg') ;"></body> -->
 <body class="hold-transition sidebar-mini">
   <!-- Site wrapper -->
   <div class="wrapper">
@@ -47,36 +49,7 @@
         <span class="brand-text font-weight-light">RESIDENTIA</span>
       </a>
       <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="image">
-            <img src="../dist/img/perfil.jpg" class="img-circle elevation-2" alt="Imagen de usuario">
-          </div>
-          <div class="info">
-            <a href="#" class="d-block">
-              <font style="vertical-align: inherit;">
-                <font style="vertical-align: inherit;">Sayuri Lobato</font>
-              </font>
-            </a>
-          </div>
-        </div>
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-            <li class="nav-item">
-              <a href="../gallery.html" class="nav-link">
-                <i class="nav-icon far fa-image"></i>
-                <p>
-                  Gallery
-                </p>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
+
       <!-- /.sidebar -->
     </aside>
     <!-- Content Wrapper. Contains page content -->
