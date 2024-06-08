@@ -123,7 +123,7 @@ session_start();
                 <font style="vertical-align: inherit;">
                   <font style="vertical-align: inherit;">Consulta de usuarios</font>
                 </font>
-              </p>
+              </p> 
             </div>
             <div class="icon">
               <i class="ion ion-bag"></i>
