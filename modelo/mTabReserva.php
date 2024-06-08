@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "", "test");
+$mysqli = new mysqli("localhost", "root", "", "residentia");
 if ($mysqli->connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
@@ -7,7 +7,7 @@ if ($mysqli->connect_errno) {
 // Perform query
 $variable = $mysqli->query("SELECT * FROM `prueba`");
 $rows = $variable->fetch_all(MYSQLI_ASSOC);
-$tbl = "<table id='divTablaR' class='table table-bordered table-hover'> ";
+$tbl = "<table id='divTablaReser' class='table table-bordered table-hover'> ";
 $tbl .= "<thead><tr> 
 <th>AREA COMÚN</th>
   <th>FECHA</th>
@@ -15,9 +15,6 @@ $tbl .= "<thead><tr>
   <th>TELEFONO</th>
   <th>ELIMINAR</th>
   </tr></thead>";
-
- 
-
 
 foreach ($rows as $prueba) {
   $id_prueba = $prueba["id_prueba"];

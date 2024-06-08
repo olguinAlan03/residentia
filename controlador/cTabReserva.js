@@ -42,58 +42,37 @@ $(document).ready(function(){
       //  $("#agregar").hide();
     //}
     dibujaTabla();
-    selectRol();
-   
-            $("#agregar").click(function(){
-                $("#modal-registro").modal();
-            });
 
             $("#guardar").click(function(){
-                nombre= $("#nombre_usuario").val();
-                correo= $("#correo").val();
-                telefono= $("#telefono").val();
-                nombre_privada= $("#nombre_privada").val();
+                area_comun= $("#area_comun").val();
+                fecha_reserva= $("#reservation").val();
+                horario= $("#horario").val();
+                id_comprobante_pago= $("#id_comprobante_pago").val();
                 rol= $("#select-rol option:selected").val();
                 
                 const options = {
                     method: "GET"
                 };
 
-            url = "../modelo/mRegTabla.php?nombre_usuario="+nombre+"&correo="+correo+"&telefono="+telefono+"&nombre_privada="+nombre_privada+"&rol="+rol; 
+            url = "../modelo/mRegReserva.php?area_comun="+area_comun+"&fecha_reserva="+fecha_reserva+"&horario="+horario+"&id_comprobante_pago="+id_comprobante_pago; 
             console.log(url);
             fetch(url, options)
             .then(Response => Response.json())
             .then(data => {
-                console.log(data);
-                if (data["Estado"] == "OK"){
-                    $("#modal-registro").modal('toggle');
-                    alert ("GUARDADO");
-                   // $("#texto").html("Guardado con exito");
-                  //  $("#modal-confirmacion").();
-                  $("#nombre_usuario").val("");
-                  $("#correo").val("");
-                  $("#telefono").val("");
-                  $("#nombre_privada").val("");
-                  $("#select-rol").val(0);
-
-                    dibujaTabla();
-                }
-                else{
-                    alert ("NO GUARDADO");
-                 /*   $("#texto").html("No guardado");
-                    $("#modal-confirmacion").modal();*/
-                
-                }
-            })
+                    alert("GUARDADO");
+                })
+                e.preventDefault();
+                e.stopPropagation();
+        
         })
     });
         function dibujaTabla(){
-            fetch("../modelo/mTabReserva.php")
+            fetch("../modelo/mTablaReserva.php")
                 .then(Response => Response.json())
                 .then(data => {
                     rpt=data["respuesta"];
-                    $("#divTablaR").html(rpt);
-                    $('#TablaR').DataTable({
+                    $("#divTablaRE").html(rpt);
+                    $('#TabReser').DataTable({
                         "paging": false,
                         "lengthChange": false,
                         "searching": true,
@@ -105,8 +84,8 @@ $(document).ready(function(){
                 })
 
             }    
-function eliminar(id_prueba){
-            fetch("../modelo/mEliminarR.php?id_prueba="+id_prueba)
+function eliminar(id_area){
+            fetch("../modelo/mEliminarAgenda.php?id_area="+id_area)
                 .then(Response => Response.json())
                 .then(data => {
                     if (data["Estado"] == "OK"){
@@ -122,19 +101,4 @@ function eliminar(id_prueba){
                     }
                       }); 
                 }
-            function selectRol(){
-                const options = {
-                    method: "GET"
-                };
-
-            url = "../modelo/mConsultaRol.php";
-            fetch(url, options)
-            .then(Response => Response.json())
-            .then(data => {
-                console.log(data);
-                if (data["Estado"] == "OK"){
-                    $("#select-rol").html(data["respuesta"]);
-
-                }
-            })
-            }
+ 
