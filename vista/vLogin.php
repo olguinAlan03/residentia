@@ -13,10 +13,13 @@
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
   <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../dist/css/adminlte.min.css">
   <!-- jQuery -->
   <script src="../plugins/jquery/jquery.min.js"></script>
+  <script src="../plugins/sweetAlert2/sweetalert2.all.min.js"></script>
   <script src="../controlador/cLogin.js"></script>
 </head>
 <body class="hold-transition login-page" style="background-image: url('../dist/img/rabello_log.jpg') ;"></body>
@@ -32,7 +35,7 @@
 
         <form>
         <div class="input-group mb-3">
-            <input id="clvresidente" type="text" class="form-control" placeholder="Clave Residente">
+            <input id="claveR" type="text" class="form-control" placeholder="Clave Acceso">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-solid fa-user"></span>
@@ -40,7 +43,7 @@
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
+          <!--<div class="input-group mb-3">
             <input id="usuario" type="text" class="form-control" placeholder="Usuario">
             <div class="input-group-append">
               <div class="input-group-text">
@@ -48,7 +51,7 @@
 
               </div>
             </div>
-          </div>
+          </div>-->
           <div class="input-group mb-3">
             <input id="pass" type="password" class="form-control" placeholder="Password">
             <div class="input-group-append">
@@ -61,8 +64,8 @@
             <div class="col-8">
               <div class="icheck-primary">
                 <input type="checkbox" id="agreeTerms" name="terms" value="agree">
-                <a href="vRegistro.php" class="text-center">
-                  <!--<font style="vertical-align: inherit;">
+                <a href="vRegistroUs.php" class="text-center">
+                  <font style="vertical-align: inherit;">
                     <font style="vertical-align: inherit;">¿No tienes cuenta?</font>
                     <font style="vertical-align: inherit;"> Registrate</font>
                   </font>
@@ -74,7 +77,6 @@
 
             <div class="col-4">
               <button id="inicio" class="btn btn-primary btn-block">ACCEDER</button>
-              <!--<button type="button" class="btn btn-default swalDefaultQuestion">Launch Question Toast</button>-->
             </div>
           </div>
         </form>

@@ -2,8 +2,8 @@ $(document).ready(function(){
     $("#inicio").click(function(e){
         //e.preventDefault();
 
-        id_residente = $("#clvresidente").val();
-        usuario = $("#usuario").val();
+        claveR = $("#claveR").val();
+        //usuario = $("#usuario").val();
         pass=$("#pass").val();
 
 
@@ -12,27 +12,41 @@ $(document).ready(function(){
         method: "GET"
     };
 
-    fetch("../modelo/mlogin.php?id_residente=" + id_residente + "&usuario=" + usuario + "&password=" + pass , options)
+    fetch("../modelo/mlogin.php?claveR=" + claveR + "&pass=" + pass , options)
     .then(Response => Response.json())
     .then(data =>{ 
         console.log(data);
-        if(data["Estado"] == "OK"){
-         if(data["id_rol"] == 1){
-            $(location).attr('href' ,'vMenu.php');
+        if(data["respuesta"]== "YES" /*&& permiso=="Administrador"*/){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'USUARIO ENCONTRADO',
+                    text: 'Haz click en el boton',  
+                });
+                setTimeout(function() {
+                }, 1000);
+                $(location).attr('href' ,'../ejemploResidenSSIN.php');
+             
+            /*alert("Encontrado");
+            $(location).attr('href', 'vMenu.php');*/
         }
         else{
-            //if(data["permiso"] == 2){
-               // $(location).attr('href' ,'../principal.html');
-           // }
+            Swal.fire({
+                icon: 'warning',
+                title: 'DATOS INCORRECTOS',
+                text: 'Haz click en el boton',  
+            });
+            setTimeout(function() {
+            }, 2000);
         }
-    }
-    else{
-        alert("No encontrado");
-      
-        
-        
-    }
-    })
+        /*if(data["Estado"] == "OK"){
+            if(data["id_rol"] == 2){
+               $(location).attr('href' ,'../ejemploResidenSSIN.html');
+            } 
+        }
+        else{ 
+            alert("No encontrado");  
+        }*/
+        })
     e.preventDefault();
     e.stopPropagation();
     })
