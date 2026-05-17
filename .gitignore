@@ -1,0 +1,4 @@
+/vendor/
+.env
+.scannerwork/
+*.DS_Store

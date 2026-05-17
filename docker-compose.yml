@@ -1,0 +1,42 @@
+services:
+
+  app:
+    build: .
+    container_name: residentia_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: residentia
+      DB_USER: residentia_user
+      DB_PASS: residentia_pass
+
+  db:
+    image: mariadb:11
+    container_name: residentia_db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: rootsecret
+      MARIADB_DATABASE: residentia
+      MARIADB_USER: residentia_user
+      MARIADB_PASSWORD: residentia_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  adminer:
+    image: adminer
+    container_name: residentia_adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
