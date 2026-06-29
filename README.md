@@ -1,93 +1,233 @@
 # Residentia
 
+Sistema de gestión de condominios construido en **PHP 8.2 vanilla** con arquitectura Front Controller, consultas MySQLi con prepared statements y despliegue 100% Dockerizado.
 
+Permite administrar unidades, residentes, vehículos, visitas, cuotas, incidentes y reservas de áreas comunes desde un panel administrativo, además de exponer un **Portal del Residente** para que cada propietario gestione sus propias reservas e incidentes.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Tabla de contenidos
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- [Características](#características)
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Seguridad](#seguridad)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Puesta en marcha](#puesta-en-marcha)
+- [Variables de entorno](#variables-de-entorno)
+- [Modelo de datos](#modelo-de-datos)
+- [Credenciales de prueba](#credenciales-de-prueba)
+- [Roadmap](#roadmap)
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Características
+
+### Panel de administración
+- **Dashboard** con métricas en vivo: residentes, vehículos, unidades, visitas del día, cuotas pendientes e incidentes abiertos.
+- **Unidades** — alta, baja y listado de departamentos/casas del condominio.
+- **Residentes** — gestión de propietarios/arrendatarios, vinculados a su unidad.
+- **Vehículos + Tags RFID** — registro de vehículos por residente y de los tags de acceso vehicular, con fecha de registro y vencimiento.
+- **Visitas** — control de acceso de visitantes con hora de entrada/salida.
+- **Cuotas** — generación de cobros por unidad, con estados `pendiente` / `vencida` / `pagada`.
+- **Incidentes** — reportes con prioridad (`alta`/`media`/`baja`) y flujo de estados (`abierto` → `en_proceso` → `resuelto`/`cerrado`).
+- **Avisos** — comunicados generales, activables/desactivables.
+- **Reservas** — gestión de áreas comunes con capacidad y horarios.
+
+### Portal del residente
+- Login independiente del panel admin.
+- Reserva de áreas comunes y reporte de incidentes acotado a la propia unidad (`$_SESSION['id_unidad']`).
+- Consulta del historial de reservas e incidentes propios.
+
+### Landing page
+- Página pública de presentación del condominio.
+
+---
+
+## Stack tecnológico
+
+| Capa | Tecnología |
+|---|---|
+| Lenguaje | PHP 8.2 (sin framework) |
+| Base de datos | MariaDB 11 |
+| Acceso a datos | MySQLi + prepared statements (sin ORM) |
+| Autoload | Composer, PSR-4 (`App\` → `app/`) |
+| Frontend | AdminLTE 3, jQuery, DataTables, SweetAlert2 |
+| Contenedores | Docker + Docker Compose (PHP-Apache, MariaDB, Adminer) |
+| Gestión de secretos | `vlucas/phpdotenv` (`.env`, ignorado por git) |
+
+---
+
+## Arquitectura
+
+El proyecto sigue el patrón **Front Controller**: toda petición HTTP entra por [`public/index.php`](public/index.php), que resuelve un array de rutas `GET`/`POST` hacia `[Controller::class, 'método']`.
 
 ```
-cd existing_repo
-git remote add origin https://gitlab.com/mapaches1/Residentia.git
-git branch -M main
-git push -uf origin main
+Cliente
+  │
+  ▼
+public/index.php  (router / front controller)
+  │
+  ▼
+app/Controllers/   → orquesta la petición, valida sesión, llama al Model, responde vista o JSON
+  │
+  ▼
+app/Models/        → una clase por entidad, queries MySQLi con prepared statements
+  │
+  ▼
+MariaDB
 ```
 
-## Integrate with your tools
+- `app/Views/` contiene los templates PHP, con `layout/top.php` y `layout/bottom.php` compartidos entre vistas del panel admin.
+- Las respuestas de API siguen el formato `{ok: true|false, data: [...], msg: string}` en los módulos nuevos, y el formato legado `{Estado, respuesta}` en Vehículos/Tags.
+- Autenticación dual por sesión: `$_SESSION['admin']` para el panel y `$_SESSION['residente']` + `$_SESSION['id_unidad']` para el portal.
 
-- [ ] [Set up project integrations](https://gitlab.com/mapaches1/Residentia/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Seguridad
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+- **Contraseñas con hash bcrypt** (`password_hash` / `password_verify`) tanto para administradores (`administrador.passwor`) como para residentes (`usuarios_pag.passwor`). El `WHERE` de las consultas de login filtra únicamente por identificador (`correo` / `id_residente`); la comparación de contraseña ocurre en PHP, nunca en SQL.
+- **Migración transparente de contraseñas legadas**: si un usuario aún tiene su contraseña en texto plano (datos previos a la migración a bcrypt), el primer login exitoso la re-hashea automáticamente y actualiza el registro en base de datos — sin pedirle al usuario que cambie su clave.
+- Todas las consultas usan **prepared statements** (MySQLi `bind_param`), evitando inyección SQL.
+- Secretos (credenciales de BD) fuera del código, vía `.env` (excluido de git por `.gitignore`).
 
-## Test and Deploy
+---
 
-Use the built-in continuous integration in GitLab.
+## Estructura del proyecto
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+```
+Residentia/
+├── app/
+│   ├── Controllers/      # Un controller por módulo (vistas + endpoints API)
+│   ├── Models/            # Acceso a datos (MySQLi)
+│   └── Views/             # Templates PHP por módulo
+├── config/
+│   └── bootstrap.php      # Autoload + carga de .env
+├── database/
+│   └── init.sql           # Esquema inicial, ejecutado por MariaDB al primer arranque
+├── public/
+│   └── index.php          # Front controller / router
+├── dist/, img/, plugins/   # Assets de AdminLTE 3
+├── apache/                 # Configuración de VirtualHost
+├── Dockerfile
+├── docker-compose.yml
+├── docker-entrypoint.sh    # Instala dependencias de Composer si vendor/ no existe
+├── composer.json
+└── .env.example
+```
 
-***
+---
 
-# Editing this README
+## Puesta en marcha
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Requisitos
 
-## Suggestions for a good README
+- [Docker](https://www.docker.com/) y Docker Compose
+- (Opcional) [Composer](https://getcomposer.org/) si quieres correr el proyecto fuera de Docker
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+### 1. Clonar el repositorio
 
-## Name
-Choose a self-explaining name for your project.
+```bash
+git clone https://github.com/<tu-usuario>/Residentia.git
+cd Residentia
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+### 2. Configurar variables de entorno
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+```bash
+cp .env.example .env
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+Los valores por defecto ya coinciden con los definidos en `docker-compose.yml`, no es necesario editarlos para correr el proyecto localmente.
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### 3. Levantar los contenedores
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+```bash
+docker compose up -d --build
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Esto levanta tres servicios:
+
+| Servicio | Contenedor | Puerto | Descripción |
+|---|---|---|---|
+| `app` | `residentia_app` | `8080` | PHP 8.2 + Apache |
+| `db` | `residentia_db` | `3306` | MariaDB 11 |
+| `adminer` | `residentia_adminer` | `8081` | Cliente web de administración de BD |
+
+Al primer arranque, MariaDB ejecuta [`database/init.sql`](database/init.sql) y crea el esquema completo. El [`docker-entrypoint.sh`](docker-entrypoint.sh) corre `composer install` automáticamente si la carpeta `vendor/` no existe.
+
+### 4. Acceder a la aplicación
+
+| Recurso | URL |
+|---|---|
+| Landing page | http://localhost:8080 |
+| Login residente | http://localhost:8080/login |
+| Login administrador | http://localhost:8080/admin/login |
+| Dashboard admin | http://localhost:8080/dashboard |
+| Adminer | http://localhost:8081 |
+
+**Conexión en Adminer:** sistema `MySQL`, servidor `db`, usuario `residentia_user`, contraseña `residentia_pass`, base de datos `residentia`.
+
+### Comandos útiles
+
+```bash
+# Ver logs de la app
+docker compose logs -f app
+
+# Detener los contenedores (conserva los datos)
+docker compose down
+
+# Resetear la base de datos desde cero (vuelve a ejecutar init.sql)
+docker compose down -v && docker compose up -d --build
+```
+
+---
+
+## Variables de entorno
+
+Definidas en `.env` (ver [`.env.example`](.env.example)):
+
+| Variable | Descripción | Valor por defecto |
+|---|---|---|
+| `DB_HOST` | Host de la base de datos | `db` |
+| `DB_NAME` | Nombre de la base de datos | `residentia` |
+| `DB_USER` | Usuario de la base de datos | `residentia_user` |
+| `DB_PASS` | Contraseña de la base de datos | `residentia_pass` |
+| `APP_ENV` | Entorno de ejecución | `development` |
+| `APP_DEBUG` | Mostrar errores detallados | `true` |
+
+> El archivo `.env` está excluido de git — nunca commitees credenciales reales.
+
+---
+
+## Modelo de datos
+
+Tablas principales definidas en [`database/init.sql`](database/init.sql):
+
+`rol`, `unidad`, `residente`, `usuarios_pag`, `administrador`, `vehiculo`, `tag`, `area_comun`, `reserva`, `aviso`, `visita`, `cuota`, `incidente`.
+
+Relaciones clave:
+- `residente.id_unidad` → `unidad.id_unidad`
+- `usuarios_pag.id_residente` → `residente.id_residente` (credenciales del portal)
+- `vehiculo.id_residente` → `residente.id_residente`
+- `tag.id_vehiculo` → `vehiculo.id_vehiculo`
+- `cuota.id_unidad`, `incidente.id_unidad`, `visita.id_unidad` → `unidad.id_unidad`
+- `reserva.id_residente` → `residente.id_residente`, `reserva.area_comun` → `area_comun`
+
+---
+
+## Credenciales de prueba
+
+| Rol | Usuario | Contraseña |
+|---|---|---|
+| Administrador | `admin@residentia.com` | `Admin123` |
+| Residente | `1` (id de residente) | `123` |
+
+---
 
 ## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+- [ ] Middleware centralizado de autenticación/autorización por rol
+- [ ] Cobertura de pruebas automatizadas (PHPUnit)
+- [ ] Paginación server-side en listados grandes
+- [ ] Notificaciones por correo para avisos y vencimiento de cuotas

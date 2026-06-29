@@ -27,20 +27,28 @@ class Residente {
         return (int)$this->db->query("SELECT COUNT(*) FROM residente")->fetch_row()[0];
     }
 
-    public function findByCredentials(string $idResidente, string $password): ?array {
+    public function findByIdResidente(string $idResidente): ?array {
         $stmt = $this->db->prepare(
             "SELECT r.id_residente, r.nombre, r.apellido_paterno, r.apellido_materno,
-                    r.telefono, r.correo, r.id_unidad
+                    r.telefono, r.correo, r.id_unidad, u_pag.passwor
              FROM usuarios_pag u_pag
              JOIN residente r ON u_pag.id_residente = r.id_residente
-             WHERE u_pag.id_residente = ? AND u_pag.passwor = ?
+             WHERE u_pag.id_residente = ?
              LIMIT 1"
         );
-        $stmt->bind_param('ss', $idResidente, $password);
+        $stmt->bind_param('s', $idResidente);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
         $stmt->close();
         return $row ?: null;
+    }
+
+    public function updatePassword(int $idResidente, string $hash): bool {
+        $stmt = $this->db->prepare("UPDATE usuarios_pag SET passwor = ? WHERE id_residente = ?");
+        $stmt->bind_param('si', $hash, $idResidente);
+        $ok = $stmt->execute();
+        $stmt->close();
+        return $ok;
     }
 
     public function create(int $idUnidad, string $nombre, string $apPat, string $apMat, string $tel, string $correo, string $pass): bool {
@@ -54,8 +62,9 @@ class Residente {
             $idResidente = $this->db->insert_id;
             $s1->close();
 
+            $hash = password_hash($pass, PASSWORD_BCRYPT);
             $s2 = $this->db->prepare("INSERT INTO usuarios_pag (id_residente, passwor) VALUES (?,?)");
-            $s2->bind_param('is', $idResidente, $pass);
+            $s2->bind_param('is', $idResidente, $hash);
             $s2->execute();
             $s2->close();
 
